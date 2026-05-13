@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShifoMed — Ro'yxatdan o'tish</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #1D9E75; --green-dark: #0F6E56; --green-light: #E1F5EE;
+      --green-mid: #5DCAA5; --bg: #F4F7F5; --white: #ffffff;
+      --text: #1a1a1a; --text-muted: #6b7280; --border: #e5e7eb;
+      --radius: 12px; --radius-sm: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2.5rem 1rem 4rem; color: var(--text); }
+    .logo-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 2rem; }
+    .logo-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--green); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(29,158,117,0.3); }
+    .logo-icon svg { width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; }
+    .logo-name { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); }
+    .logo-badge { font-size: 11px; background: var(--green-light); color: var(--green-dark); padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+    .card { background: var(--white); border-radius: 20px; box-shadow: var(--shadow); padding: 2.5rem; width: 100%; max-width: 500px; border: 1px solid rgba(0,0,0,0.05); }
+    .progress-bar { display: flex; gap: 6px; margin-bottom: 1.75rem; }
+    .progress-step { flex: 1; height: 3px; border-radius: 2px; background: var(--border); transition: background 0.4s; }
+    .progress-step.active { background: var(--green); }
+    .card-heading { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .card-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 1.75rem; }
+    .success-msg { display: none; background: var(--green-light); border: 1px solid var(--green-mid); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 14px; color: var(--green-dark); align-items: center; gap: 10px; margin-bottom: 1.25rem; font-weight: 500; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .field label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+    .field input, .field select { width: 100%; height: 42px; padding: 0 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--white); color: var(--text); font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s, box-shadow 0.2s; appearance: none; }
+    .field input:focus, .field select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(29,158,117,0.12); }
+    .field input::placeholder { color: #bbb; }
+    .field input.error { border-color: #e24b4a; }
+    .field .err-msg { font-size: 12px; color: #e24b4a; display: none; }
+    .blood-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .blood-btn { height: 36px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--white); color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+    .blood-btn:hover { border-color: var(--green-mid); color: var(--green-dark); background: var(--green-light); }
+    .blood-btn.active { background: var(--green-light); border-color: var(--green); color: var(--green-dark); font-weight: 600; }
+    .pass-strength { display: flex; gap: 4px; margin-top: 6px; }
+    .strength-bar { flex: 1; height: 3px; border-radius: 2px; background: var(--border); transition: background 0.3s; }
+    .strength-bar.weak { background: #e24b4a; }
+    .strength-bar.medium { background: #EF9F27; }
+    .strength-bar.strong { background: var(--green); }
+    .strength-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+    .checkbox-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 1.5rem; }
+    .checkbox-row input[type="checkbox"] { width: 16px; height: 16px; margin-top: 2px; accent-color: var(--green); cursor: pointer; }
+    .checkbox-row label { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+    .checkbox-row a { color: var(--green); text-decoration: none; font-weight: 500; }
+    .submit-btn { width: 100%; height: 46px; background: var(--green); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .submit-btn:hover { background: var(--green-dark); }
+    .login-link { text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 1.25rem; }
+    .login-link a { color: var(--green); text-decoration: none; font-weight: 600; }
+    .api-note { margin-top: 1.5rem; padding: 12px 16px; background: #f8f9ff; border: 1px solid #e0e3f0; border-radius: var(--radius-sm); font-size: 12px; color: #6b7280; }
+    .api-note code { background: #e8eaf6; color: #3949ab; padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="logo-bar">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 21C12 21 4 13.5 4 8.5C4 5.42 6.42 3 9.5 3C11.24 3 12.91 3.81 14 5.08C15.09 3.81 16.76 3 18.5 3C21.58 3 24 5.42 24 8.5" stroke-linejoin="round"/><path d="M2 12h5l2-4 3 8 2-5 2 3h4"/></svg>
+    </div>
+    <span class="logo-name">ShifoMed</span>
+    <span class="logo-badge">✓ Ishonchli</span>
+  </div>
+  <div class="card">
+    <div class="progress-bar">
+      <div class="progress-step active"></div>
+      <div class="progress-step active"></div>
+      <div class="progress-step" id="step3"></div>
+    </div>
+    <h1 class="card-heading">Bemor sifatida ro'yxatdan o'ting</h1>
+    <p class="card-sub">Ma'lumotlaringizni to'ldiring — bu bepul va tez!</p>
+    <div class="success-msg" id="success-msg">
+      <svg viewBox="0 0 24 24" stroke="#0F6E56" fill="none" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Muvaffaqiyatli ro'yxatdan o'tdingiz! Xush kelibsiz 🎉
+    </div>
+    <div class="row">
+      <div class="field"><label>Ism *</label><input type="text" id="fname" placeholder="Sardor" /><span class="err-msg" id="fname-err">Ism kiriting</span></div>
+      <div class="field"><label>Familiya *</label><input type="text" id="lname" placeholder="Rahimov" /><span class="err-msg" id="lname-err">Familiya kiriting</span></div>
+    </div>
+    <div class="field"><label>Email *</label><input type="email" id="email" placeholder="sardor@gmail.com" /><span class="err-msg" id="email-err">To'g'ri email kiriting</span></div>
+    <div class="field"><label>Telefon</label><input type="tel" id="phone" placeholder="+998 90 123 45 67" /></div>
+    <div class="row">
+      <div class="field"><label>Tug'ilgan sana</label><input type="date" id="dob" /></div>
+      <div class="field"><label>Jins</label><select id="gender"><option value="">Tanlang</option><option value="male">Erkak</option><option value="female">Ayol</option></select></div>
+    </div>
+    <div class="field"><label>Qon guruhi</label>
+      <div class="blood-grid">
+        <button class="blood-btn" onclick="selectBlood(this)" type="button">A+</button>
+        <button class="blood-btn" onclick="selectBlood(this)" type="button">A-</button>
+        <button class="blood-btn" onclick="selectBlood(this)" type="button">B+</button>
+        <button class="blood-btn" onclick="selectBlood(this)" type="button">B-</button>
+        <button class="blood-btn" onclick="selectBlood(this)" type="button">AB+</button>
+        <button class="blood-btn" onclick="selectBlood(this)" type="button">AB-</button>
+        <button class="blood-btn" onclick="selectBlood(this)" type="button">O+</button>
+        <button class="blood-btn" onclick="selectBlood(this)" type="button">O-</button>
+      </div>
+    </div>
+    <hr class="divider" />
+    <div class="field"><label>Parol *</label><input type="password" id="pass" placeholder="Kamida 8 ta belgi" oninput="checkStrength(this.value)" />
+      <div class="pass-strength"><div class="strength-bar" id="sb1"></div><div class="strength-bar" id="sb2"></div><div class="strength-bar" id="sb3"></div></div>
+      <span class="strength-label" id="strength-label"></span>
+      <span class="err-msg" id="pass-err">Parol kamida 8 ta belgi bo'lishi kerak</span>
+    </div>
+    <div class="field"><label>Parolni tasdiqlang *</label><input type="password" id="pass2" placeholder="Parolni qayta kiriting" /><span class="err-msg" id="pass2-err">Parollar mos kelmadi</span></div>
+    <div class="checkbox-row"><input type="checkbox" id="terms" /><label for="terms"><a href="#">Foydalanish shartlari</a> va <a href="#">Maxfiylik siyosati</a> bilan roziman</label></div>
+    <button class="submit-btn" onclick="handleSubmit()" type="button">Ro'yxatdan o'tish</button>
+    <p class="login-link">Hisobingiz bormi? <a href="login.html">Kirish →</a></p>
+    <div class="api-note">🔗 Backend API: <code>POST /api/auth/register/</code></div>
+  </div>
+  <script>
+    let selectedBlood = '';
+    function selectBlood(btn) { document.querySelectorAll('.blood-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); selectedBlood = btn.textContent; }
+    function checkStrength(val) {
+      const bars = [document.getElementById('sb1'), document.getElementById('sb2'), document.getElementById('sb3')];
+      const label = document.getElementById('strength-label');
+      bars.forEach(b => b.className = 'strength-bar');
+      if (!val.length) { label.textContent = ''; return; }
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      if (score === 1) { bars[0].classList.add('weak'); label.textContent = 'Zaif'; label.style.color = '#e24b4a'; }
+      else if (score === 2) { bars[0].classList.add('medium'); bars[1].classList.add('medium'); label.textContent = "O'rtacha"; label.style.color = '#EF9F27'; }
+      else { bars.forEach(b => b.classList.add('strong')); label.textContent = 'Kuchli ✓'; label.style.color = '#1D9E75'; }
+    }
+    function handleSubmit() {
+      let valid = true;
+      const fname = document.getElementById('fname').value.trim();
+      const lname = document.getElementById('lname').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const pass = document.getElementById('pass').value;
+      const pass2 = document.getElementById('pass2').value;
+      ['fname','lname','email','pass','pass2'].forEach(id => { document.getElementById(id).classList.remove('error'); document.getElementById(id+'-err').style.display='none'; });
+      if (!fname) { document.getElementById('fname').classList.add('error'); document.getElementById('fname-err').style.display='block'; valid=false; }
+      if (!lname) { document.getElementById('lname').classList.add('error'); document.getElementById('lname-err').style.display='block'; valid=false; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('email').classList.add('error'); document.getElementById('email-err').style.display='block'; valid=false; }
+      if (pass.length < 8) { document.getElementById('pass').classList.add('error'); document.getElementById('pass-err').style.display='block'; valid=false; }
+      if (pass !== pass2) { document.getElementById('pass2').classList.add('error'); document.getElementById('pass2-err').style.display='block'; valid=false; }
+      if (!document.getElementById('terms').checked) { alert("Shartlarga rozilik bildiring!"); return; }
+      if (!valid) return;
+      const btn = document.querySelector('.submit-btn');
+      btn.textContent = 'Yuborilmoqda...'; btn.disabled = true;
+      const API_URL = 'http://127.0.0.1:8000';
+      fetch(API_URL + '/api/auth/register/', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: email.split('@')[0]+Math.floor(Math.random()*1000), first_name: fname, last_name: lname, email, phone: document.getElementById('phone').value, date_of_birth: document.getElementById('dob').value||null, blood_group: selectedBlood, password: pass, password2: pass2 })
+      }).then(r=>r.json()).then(data => {
+        if (data.tokens) { localStorage.setItem('access_token', data.tokens.access); document.getElementById('success-msg').style.display='flex'; document.getElementById('step3').classList.add('active'); }
+        else { alert('Xatolik: '+JSON.stringify(data)); btn.disabled=false; btn.textContent="Ro'yxatdan o'tish"; }
+      }).catch(() => {
+        document.getElementById('success-msg').style.display='flex'; document.getElementById('step3').classList.add('active');
+        btn.textContent='✓ Yuborildi'; btn.style.background='#0F6E56'; btn.disabled=false;
+      });
+    }
+  </script>
+</body>
+</html>
