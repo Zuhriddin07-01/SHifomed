@@ -35,7 +35,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'shifomed.shifomed.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {
